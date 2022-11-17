@@ -1,4 +1,4 @@
-exports.createUser = async (req, res) => {
+exports.create = async (req, res) => {
   res.send("create user");
 };
 
