@@ -1,0 +1,19 @@
+{
+  "name": "mern-movie-review",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarripewe01/MERN-Movie-Review.git"
+  },
+  "author": "Tarri Pewe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tarripewe01/MERN-Movie-Review/issues"
+  },
+  "homepage": "https://github.com/tarripewe01/MERN-Movie-Review#readme"
+}
