@@ -1,4 +1,4 @@
 exports.create = async (req, res) => {
-  res.send("create user");
+  console.log(req.body);
+  res.json({ user: req.body });
 };
-
