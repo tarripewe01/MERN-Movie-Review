@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/tarripewe01/MERN-Movie-Review/issues"
   },
-  "homepage": "https://github.com/tarripewe01/MERN-Movie-Review#readme"
+  "homepage": "https://github.com/tarripewe01/MERN-Movie-Review#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
