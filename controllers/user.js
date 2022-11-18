@@ -4,6 +4,7 @@ const EmailVerificationTokenModel = require("../models/emailVerificationToken");
 const passwordResetTokenModel = require("../models/passwordResetToken");
 const { generateOTP, generateMailTransporter } = require("../utils/mail");
 const { sendError, generateRandomBytes } = require("../utils/helper");
+const { json } = require("express");
 
 exports.create = async (req, res) => {
   const { name, email, password } = req.body;
@@ -164,7 +165,7 @@ exports.forgetPassword = async (req, res) => {
 
   await newPasswordResetToken.save();
 
-  const reserPasswordUrl = `http://localhost:3000/reset-password/?token=${token}&id=${user._id}`;
+  const resetPasswordUrl = `http://localhost:3000/reset-password/?token=${token}&id=${user._id}`;
 
   // send otp to user email
   var transport = nodemailer.createTransport({
@@ -182,21 +183,59 @@ exports.forgetPassword = async (req, res) => {
     subject: "Reset Password",
     html: `
     <p>Reset Password</p>
-    <a href="${reserPasswordUrl}">Click here to reset password</a>
+    <a href="${resetPasswordUrl}">Click here to reset password</a>
     
     
     `,
   });
 
-  // transport.sendMail({
-  //   from: "admin@security.com",
-  //   to: user.email,
-  //   subject: "Reset Password Link",
-  //   html: `
-  //    <p>Click here to reset password</p>
-  //    <a href='${reserPasswordUrl}' >Change Password</a>,
-  //    `,
-  // });
-
   res.json({ message: "Reset password link has been sent to your email !" });
+};
+
+exports.sendResetPasswordTokenStatus = async (req, res) => {
+  res.json({ valid: true });
+};
+
+exports.resetPassword = async (req, res) => {
+  const { newPassword, userId } = req.body;
+
+  const user = await UserModel.findById(userId);
+
+  const matched = await user.compairePassword(newPassword);
+
+  if (matched)
+    return sendError(
+      res,
+      "The new password must be different from the old password"
+    );
+
+  user.password = newPassword;
+
+  await user.save();
+
+  await passwordResetTokenModel.findByIdAndDelete(req.resetToken._id);
+
+  // send otp to user email
+  var transport = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "655df9fe8df911",
+      pass: "47b0c492b4f3af",
+    },
+  });
+
+  transport.sendMail({
+    from: "admin@security.com",
+    to: user.email,
+    subject: "Password Reset Successfully",
+    html: `
+      <h1>Password Reset Successfully</h1>
+      <p>Now you can use new password.</p>
+      `,
+  });
+
+  res.json({
+    message: "Password reset successfully, now you can use new password.",
+  });
 };
