@@ -31,7 +31,14 @@ exports.create = async (req, res) => {
   await newEmailVerificationToken.save();
 
   // send otp to user email
-  var transport = generateMailTransporter();
+  var transport = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: process.env.MAIL_TRAP_USER,
+      pass: process.env.MAIL_TRAP_PASS,
+    },
+  });
 
   transport.sendMail({
     from: "admin@verification.com",
@@ -83,8 +90,8 @@ exports.verifyEmail = async (req, res) => {
     host: "smtp.mailtrap.io",
     port: 2525,
     auth: {
-      user: "655df9fe8df911",
-      pass: "47b0c492b4f3af",
+      user: process.env.MAIL_TRAP_USER,
+      pass: process.env.MAIL_TRAP_PASS,
     },
   });
 
@@ -174,8 +181,8 @@ exports.forgetPassword = async (req, res) => {
     host: "smtp.mailtrap.io",
     port: 2525,
     auth: {
-      user: "655df9fe8df911",
-      pass: "47b0c492b4f3af",
+      user: process.env.MAIL_TRAP_USER,
+      pass: process.env.MAIL_TRAP_PASS,
     },
   });
 
@@ -222,8 +229,8 @@ exports.resetPassword = async (req, res) => {
     host: "smtp.mailtrap.io",
     port: 2525,
     auth: {
-      user: "655df9fe8df911",
-      pass: "47b0c492b4f3af",
+      user: process.env.MAIL_TRAP_USER,
+      pass: process.env.MAIL_TRAP_PASS,
     },
   });
 
@@ -257,7 +264,7 @@ exports.signIn = async (req, res) => {
       "The new password must be different from the old password"
     );
 
-  const jwtToken = jwt.sign({ userId: user._id }, "hdy389236392wnjsn78290", {
+  const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
     expiresIn: "7h",
   });
 
