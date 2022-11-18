@@ -1,9 +1,9 @@
 const nodemailer = require("nodemailer");
-
 const UserModel = require("../models/user");
 const EmailVerificationTokenModel = require("../models/emailVerificationToken");
+const passwordResetTokenModel = require("../models/passwordResetToken");
 const { generateOTP, generateMailTransporter } = require("../utils/mail");
-const { sendError } = require("../utils/helper");
+const { sendError, generateRandomBytes } = require("../utils/helper");
 
 exports.create = async (req, res) => {
   const { name, email, password } = req.body;
@@ -135,4 +135,68 @@ exports.resendEmailVerificationToken = async (req, res) => {
   });
 
   res.json({ message: "OTP has been sent to your registered email !" });
+};
+
+exports.forgetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return sendError(res, "Please provide email");
+
+  const user = await UserModel.findOne({ email });
+
+  if (!user) return sendError(res, "User not found !");
+
+  const alreadyHasToken = await passwordResetTokenModel.findOne({
+    owner: user._id,
+  });
+
+  if (alreadyHasToken)
+    return sendError(
+      res,
+      "Only after one hour you can request for another token !"
+    );
+
+  const token = await generateRandomBytes();
+  const newPasswordResetToken = await passwordResetTokenModel({
+    owner: user._id,
+    token,
+  });
+
+  await newPasswordResetToken.save();
+
+  const reserPasswordUrl = `http://localhost:3000/reset-password/?token=${token}&id=${user._id}`;
+
+  // send otp to user email
+  var transport = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "655df9fe8df911",
+      pass: "47b0c492b4f3af",
+    },
+  });
+
+  transport.sendMail({
+    from: "admin@security.com",
+    to: user.email,
+    subject: "Reset Password",
+    html: `
+    <p>Reset Password</p>
+    <a href="${reserPasswordUrl}">Click here to reset password</a>
+    
+    
+    `,
+  });
+
+  // transport.sendMail({
+  //   from: "admin@security.com",
+  //   to: user.email,
+  //   subject: "Reset Password Link",
+  //   html: `
+  //    <p>Click here to reset password</p>
+  //    <a href='${reserPasswordUrl}' >Change Password</a>,
+  //    `,
+  // });
+
+  res.json({ message: "Reset password link has been sent to your email !" });
 };
