@@ -1,10 +1,12 @@
 const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+
 const UserModel = require("../models/user");
 const EmailVerificationTokenModel = require("../models/emailVerificationToken");
 const passwordResetTokenModel = require("../models/passwordResetToken");
+
 const { generateOTP, generateMailTransporter } = require("../utils/mail");
 const { sendError, generateRandomBytes } = require("../utils/helper");
-const { json } = require("express");
 
 exports.create = async (req, res) => {
   const { name, email, password } = req.body;
@@ -237,5 +239,34 @@ exports.resetPassword = async (req, res) => {
 
   res.json({
     message: "Password reset successfully, now you can use new password.",
+  });
+};
+
+exports.signIn = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await UserModel.findOne({ email });
+
+  if (!user) return sendError(res, "Email or Password mismatch");
+
+  const matched = await user.compairePassword(password);
+
+  if (!matched)
+    return sendError(
+      res,
+      "The new password must be different from the old password"
+    );
+
+  const jwtToken = jwt.sign({ userId: user._id }, "hdy389236392wnjsn78290", {
+    expiresIn: "7h",
+  });
+
+  res.json({
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      token: jwtToken,
+    },
   });
 };

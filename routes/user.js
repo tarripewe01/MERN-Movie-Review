@@ -6,6 +6,7 @@ const {
   userValidator,
   validate,
   validatePassword,
+  signInValidator,
 } = require("../middlewares/validator");
 
 const {
@@ -15,8 +16,11 @@ const {
   forgetPassword,
   sendResetPasswordTokenStatus,
   resetPassword,
+  signIn,
 } = require("../controllers/user");
 const { isValidPasswordResetToken } = require("../middlewares/user");
+
+router.post("/signIn", signInValidator, validate, signIn);
 
 router.post("/create", userValidator, validate, create);
 router.post("/verify-email", verifyEmail);
