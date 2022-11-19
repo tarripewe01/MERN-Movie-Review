@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
 const { sendError } = require("../utils/helper");
-const User = require("../models/user");
+const UserModel = require("../models/user");
 
-exports.auth = async (req, res, next) => {
+exports.isAuth = async (req, res, next) => {
   const token = req.headers?.authorization;
 
-  const jwtToken = token?.split("Bearer")[1];
+  const jwtToken = token;
 
   if (!jwtToken) return sendError(res, "Invalid Token");
 
@@ -17,6 +17,12 @@ exports.auth = async (req, res, next) => {
   if (!user) return sendError(res, "unauthorized access !");
 
   req.user = user;
+
+  next();
+};
+
+exports.isAdmin = async (req, res, next) => {
+  if (req.user.role !== "admin") return sendError(res, "unauthorized access !");
 
   next();
 };

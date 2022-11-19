@@ -284,15 +284,36 @@ exports.signIn = async (req, res, next) => {
       "The new password must be different from the old password"
     );
 
-  const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+  const {
+    _id,
+    name,
+    role,
+    isVerified,
+    phone,
+    address,
+    ktp,
+    npwp,
+    bank,
+    bank_account,
+  } = user;
+
+  const jwtToken = jwt.sign({ userId: _id }, process.env.JWT_SECRET, {
     expiresIn: "7h",
   });
 
   res.json({
     user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
+      id: _id,
+      name,
+      email,
+      role,
+      phone,
+      address,
+      ktp,
+      npwp,
+      bank,
+      bank_account,
+      isVerified,
       token: jwtToken,
     },
   });

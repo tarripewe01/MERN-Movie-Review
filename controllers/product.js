@@ -326,7 +326,7 @@ exports.searchProduct = async (req, res) => {
 };
 
 // exports.bidProduct = async (req, res) => {
-//   const user = await UserModel.findById(req.user.user._id).select("-password");
+//   const user = await UserModel.findById(req.user.id).select("-password");
 //   console.log(user)
 //   const product = await ProductModel.findById(req.params.productId);
 
