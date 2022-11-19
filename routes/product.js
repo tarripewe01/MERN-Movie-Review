@@ -9,6 +9,7 @@ const {
   getAllProducts,
   getProductById,
   searchProduct,
+  bidProduct,
 } = require("../controllers/product");
 const { uploadImage } = require("../middlewares/multer");
 const { actorInfoValidator, validate } = require("../middlewares/validator");
@@ -36,5 +37,7 @@ router.get("/search", searchProduct);
 router.get("/all", getAllProducts);
 
 router.get("/:productId", getProductById);
+
+// router.post("/bid/:productId", bidProduct);
 
 module.exports = router;
