@@ -13,7 +13,7 @@ const {
 } = require("../controllers/product");
 const { isAuth } = require("../middlewares/auth");
 const { uploadImage } = require("../middlewares/multer");
-const { actorInfoValidator, validate } = require("../middlewares/validator");
+const { validate } = require("../middlewares/validator");
 
 router.post(
   "/create",
@@ -23,7 +23,7 @@ router.post(
   createProduct
 );
 
-router.post(
+router.put(
   "/update/:productId",
   uploadImage.single("avatar"),
   //   actorInfoValidator,
@@ -39,6 +39,6 @@ router.get("/all", getAllProducts);
 
 router.get("/:productId", getProductById);
 
-router.post("/bid/:id",isAuth, bidProduct);
+router.post("/bid/:id", isAuth, bidProduct);
 
 module.exports = router;
