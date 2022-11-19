@@ -3,7 +3,6 @@ const UserModel = require("../models/user");
 
 const { sendError } = require("../utils/helper");
 const { isValidObjectId } = require("mongoose");
-const product = require("../models/product");
 
 const cloudinary = require("cloudinary").v2;
 
@@ -325,24 +324,26 @@ exports.searchProduct = async (req, res) => {
   res.status(200).json(result);
 };
 
-// exports.bidProduct = async (req, res) => {
-//   const user = await UserModel.findById(req.user.id).select("-password");
-//   console.log(user)
-//   const product = await ProductModel.findById(req.params.productId);
+exports.bidProduct = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await UserModel.findById(req.user.id).select("-password");
+    const product = await ProductModel.findById(id);
 
-//   const { productId } = req.params;
-//   const { nominal_bid } = req.body;
+    const { nominal_bid } = req.body;
 
-//   if (!isValidObjectId(productId)) return sendError(res, "Invalid Request");
+    const newBid = {
+      nominal_bid,
+      user,
+    };
 
-//   const newBid = {
-//     user: user,
-//     nominal_bid,
-//   };
+    product.bids.unshift(newBid);
 
-//   product.bids.unshift(newBid);
+    await product.save();
 
-//   await product.save();
-
-//   res.json(product.bids);
-// };
+    res.json(product.bids);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+};

@@ -11,6 +11,7 @@ const {
   searchProduct,
   bidProduct,
 } = require("../controllers/product");
+const { isAuth } = require("../middlewares/auth");
 const { uploadImage } = require("../middlewares/multer");
 const { actorInfoValidator, validate } = require("../middlewares/validator");
 
@@ -38,6 +39,6 @@ router.get("/all", getAllProducts);
 
 router.get("/:productId", getProductById);
 
-// router.post("/bid/:productId", bidProduct);
+router.post("/bid/:id",isAuth, bidProduct);
 
 module.exports = router;
