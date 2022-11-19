@@ -113,3 +113,9 @@ exports.searchActor = async (req, res) => {
 
   res.status(200).json(result);
 };
+
+exports.getAllActors = async (req, res) => {
+  const result = await ActorModel.find().sort({ createdAt: -1 }).limit(10);
+
+  res.status(200).json(result);
+};
