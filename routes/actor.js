@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { createActor } = require("../controllers/create");
+const { createActor } = require("../controllers/actor");
 const { uploadImage } = require("../middlewares/multer");
 const { actorInfoValidator, validate } = require("../middlewares/validator");
 
