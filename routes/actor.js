@@ -2,7 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 
-const { createActor, updateActor, removeActor } = require("../controllers/actor");
+const {
+  createActor,
+  updateActor,
+  removeActor,
+  searchActor,
+} = require("../controllers/actor");
 const { uploadImage } = require("../middlewares/multer");
 const { actorInfoValidator, validate } = require("../middlewares/validator");
 
@@ -23,5 +28,7 @@ router.post(
 );
 
 router.delete("/:actorId", removeActor);
+
+router.get("/search", searchActor);
 
 module.exports = router;

@@ -103,3 +103,13 @@ exports.removeActor = async (req, res) => {
 
   res.status(200).json({ message: "Actor deleted successfully" });
 };
+
+exports.searchActor = async (req, res) => {
+  const { query } = req;
+
+  const result = await ActorModel.find({
+    $text: { $search: `"${query.name}"` },
+  });
+
+  res.status(200).json(result);
+};
