@@ -13,7 +13,7 @@ const {
 
 const { uploadImage, uploadVideo } = require("../middlewares/multer");
 const { isAuth, isAdmin } = require("../middlewares/auth");
-const { uploadTrailer } = require("../controllers/movie");
+const { uploadTrailer, createMovie } = require("../controllers/movie");
 
 router.post(
   "/upload-trailer",
@@ -23,15 +23,13 @@ router.post(
   uploadTrailer
 );
 
-// router.post(
-//   "/update/:actorId",
-//   isAuth,
-//   isAdmin,
-//   uploadImage.single("avatar"),
-//   actorInfoValidator,
-//   validate,
-//   updateActor
-// );
+router.post(
+  "/create",
+  isAuth,
+  isAdmin,
+  uploadImage.single("poster"),
+  createMovie
+);
 
 // router.delete("/:actorId", isAuth, isAdmin, removeActor);
 

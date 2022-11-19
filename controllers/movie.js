@@ -24,3 +24,21 @@ exports.uploadTrailer = async (req, res) => {
 
   res.status(201).json({ url, public_id });
 };
+
+exports.createMovie = async (req, res) => {
+  const {
+    title,
+    storyLine,
+    director,
+    releaseDate,
+    status,
+    type,
+    genres,
+    tags,
+    cast,
+    writers,
+    trailer,
+    poster,
+    languange,
+  } = req.body;
+};
