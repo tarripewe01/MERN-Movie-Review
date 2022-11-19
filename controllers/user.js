@@ -9,13 +9,33 @@ const { generateOTP, generateMailTransporter } = require("../utils/mail");
 const { sendError, generateRandomBytes } = require("../utils/helper");
 
 exports.create = async (req, res) => {
-  const { name, email, password } = req.body;
+  const {
+    name,
+    email,
+    password,
+    phone,
+    ktp,
+    npwp,
+    address,
+    bank,
+    bank_account,
+  } = req.body;
 
   const oldUser = await UserModel.findOne({ email });
 
   if (oldUser) return sendError(res, "This Email is already in use");
 
-  const newUser = new UserModel({ name, email, password });
+  const newUser = new UserModel({
+    name,
+    email,
+    password,
+    phone,
+    ktp,
+    npwp,
+    address,
+    bank,
+    bank_account,
+  });
 
   await newUser.save();
 

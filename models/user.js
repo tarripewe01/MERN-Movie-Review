@@ -17,6 +17,24 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+  },
+  ktp: {
+    type: String,
+  },
+  npwp: {
+    type: String,
+  },
+  bank: {
+    type: String,
+  },
+  bank_account: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
   isVerified: {
     type: Boolean,
     default: false,
