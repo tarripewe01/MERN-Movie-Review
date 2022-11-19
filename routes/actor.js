@@ -8,6 +8,7 @@ const {
   removeActor,
   searchActor,
   getAllActors,
+  getActorById,
 } = require("../controllers/actor");
 const { uploadImage } = require("../middlewares/multer");
 const { actorInfoValidator, validate } = require("../middlewares/validator");
@@ -33,5 +34,7 @@ router.delete("/:actorId", removeActor);
 router.get("/search", searchActor);
 
 router.get("/all", getAllActors);
+
+router.get("/:actorId", getActorById);
 
 module.exports = router;

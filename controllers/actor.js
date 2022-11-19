@@ -119,3 +119,15 @@ exports.getAllActors = async (req, res) => {
 
   res.status(200).json(result);
 };
+
+exports.getActorById = async (req, res) => {
+  const { actorId } = req.params;
+
+  if (!isValidObjectId(actorId)) return sendError(res, "Invalid Request");
+
+  const actor = await ActorModel.findById(actorId);
+
+  if (!actor) return sendError(res, "Actor not found", 404);
+
+  res.json(actor);
+};
