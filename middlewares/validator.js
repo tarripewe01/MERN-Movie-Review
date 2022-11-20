@@ -57,16 +57,16 @@ exports.movieInfoValidator = [
     .isIn(["public", "provate"])
     .withMessage("Movie status must be public or private !"),
   check("type").trim().not().isEmpty().withMessage("Movie type is missing !"),
-  check("genres")
-    .isArray()
-    .withMessage("Genres must be an array of strings !")
-    .custom((genres) => {
-      (value) => {
-        for (let g of value) {
-          if (!genres.includes(g)) throw Error("Invalid Genres !");
-        }
-      };
-    }),
+  // check("genres")
+  //   .isArray()
+  //   .withMessage("Genres must be an array of strings !")
+  //   .custom((value) => {
+  //     for (let g of value) {
+  //       if (!genres.includes(g)) throw Error("Invalid Genres !");
+  //     }
+
+  //     return true;
+  //   }),
   check("tags")
     .isArray({ min: 1 })
     .withMessage("Tags must be an array of strings !")
@@ -74,13 +74,14 @@ exports.movieInfoValidator = [
       for (let tag of tags) {
         if (typeof tag !== "string") throw Error("Invalid Tags !");
       }
+      return true;
     }),
   check("cast")
     .isArray()
     .withMessage("Cast must be an array of strings !")
     .custom((cast) => {
       for (let c of cast) {
-        if (!isValidObjectId(c.id))
+        if (!isValidObjectId(c.actor))
           throw Error("Invalid Cast id inside cast !");
         if (!c.roleAs?.trim()) throw Error("Role as is missing inside cast !");
         if (typeof c.leadActor !== "boolean")
@@ -88,10 +89,11 @@ exports.movieInfoValidator = [
             "Only accepted boolean value inside leadActor inside cast !"
           );
       }
+      return true;
     }),
-  check("trailerInfo")
+  check("trailer")
     .isObject()
-    .withMessage("TrailerInfo must be an object with url and public_id !")
+    .withMessage("Trailer must be an object with url and public_id !")
     .custom(({ url, public_id }) => {
       try {
         const result = new URL(url);
@@ -106,9 +108,11 @@ exports.movieInfoValidator = [
       } catch (error) {
         throw Error("Trailer url is invalid !");
       }
+      return true;
     }),
   check("poster").custom((_, { req }) => {
     if (!req.file) throw Error("Poster file is missing !");
+    return true;
   }),
 ];
 

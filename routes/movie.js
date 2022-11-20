@@ -14,6 +14,8 @@ const {
 const { uploadImage, uploadVideo } = require("../middlewares/multer");
 const { isAuth, isAdmin } = require("../middlewares/auth");
 const { uploadTrailer, createMovie } = require("../controllers/movie");
+const { parseData } = require("../utils/helper");
+const { validate, movieInfoValidator } = require("../middlewares/validator");
 
 router.post(
   "/upload-trailer",
@@ -28,6 +30,9 @@ router.post(
   isAuth,
   isAdmin,
   uploadImage.single("poster"),
+  parseData,
+  movieInfoValidator,
+  validate,
   createMovie
 );
 
