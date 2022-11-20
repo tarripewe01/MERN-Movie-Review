@@ -58,7 +58,7 @@ exports.createMovie = async (req, res) => {
   });
 
   if (director) {
-    if (isValidObjectId(director))
+    if (!isValidObjectId(director))
       return sendError(res, "Invalid Director id !");
     newMovie.director = director;
   }
@@ -119,4 +119,57 @@ exports.createMovie = async (req, res) => {
     writers: newMovie.writers,
     poster: newMovie.poster,
   });
+};
+
+exports.updateMovieWithoutPoster = async (req, res) => {
+  const { movieId } = req.params;
+
+  if (!isValidObjectId(movieId)) return sendError(res, "Invalid Movie id !");
+
+  const movie = await MovieModel.findById(movieId);
+  if (!movie) return sendError(res, "Movie not found !", 404);
+
+  const {
+    title,
+    storyLine,
+    director,
+    releaseDate,
+    status,
+    type,
+    genres,
+    tags,
+    cast,
+    writers,
+    trailer,
+    languange,
+  } = req.body;
+
+  movie.title = title;
+  movie.storyLine = storyLine;
+  movie.releaseDate = releaseDate;
+  movie.status = status;
+  movie.type = type;
+  movie.genres = genres;
+  movie.tags = tags;
+  movie.cast = cast;
+  movie.trailer = trailer;
+  movie.languange = languange;
+
+  if (director) {
+    if (!isValidObjectId(director))
+      return sendError(res, "Invalid Director id !");
+    movie.director = director;
+  }
+
+  if (writers) {
+    for (let writerId of writers) {
+      if (!isValidObjectId(writerId))
+        return sendError(res, "Invalid Writer id !");
+    }
+    movie.writers = writers;
+  }
+
+  await movie.save();
+
+  res.status(200).json({ message: "Movie updated successfully !" });
 };
